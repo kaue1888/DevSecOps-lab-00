@@ -1,4 +1,4 @@
-name: Security Scan (SCA)
+name: Security Scan (SCA + IaC)
 
 on:
   push:
@@ -24,3 +24,17 @@ jobs:
 
       - name: Escanear vulnerabilidades (falha em HIGH/CRITICAL)
         run: grype sbom:sbom.json --fail-on high
+
+  iac-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Instalar Kubescape
+        run: curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
+
+      - name: Escanear manifesto Kubernetes
+        run: |
+          export PATH=$PATH:$HOME/.kubescape/bin
+          kubescape scan framework nsa juice-shop-deployment.yaml
