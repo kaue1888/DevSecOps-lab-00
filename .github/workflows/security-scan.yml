@@ -1,0 +1,26 @@
+name: Security Scan (SCA)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sca-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Instalar Syft
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sudo sh -s -- -b /usr/local/bin
+
+      - name: Instalar Grype
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+
+      - name: Gerar SBOM da imagem Juice Shop
+        run: syft bkimminich/juice-shop -o json > sbom.json
+
+      - name: Escanear vulnerabilidades (falha em HIGH/CRITICAL)
+        run: grype sbom:sbom.json --fail-on high
