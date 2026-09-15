@@ -16,7 +16,15 @@ spec:
         - name: juice-shop
           image: bkimminich/juice-shop
           securityContext:
-            privileged: true
-            runAsUser: 0
+            privileged: false
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
           ports:
             - containerPort: 3000
