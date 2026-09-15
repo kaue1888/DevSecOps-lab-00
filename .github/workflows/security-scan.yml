@@ -34,7 +34,7 @@ jobs:
       - name: Instalar Kubescape
         run: curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
 
-      - name: Escanear manifesto Kubernetes
+      - name: Escanear manifesto Kubernetes (falha se compliance < 70%)
         run: |
           export PATH=$PATH:$HOME/.kubescape/bin
-          kubescape scan framework nsa juice-shop-deployment.yaml
+          kubescape scan framework nsa juice-shop-deployment.yaml --compliance-threshold 70
